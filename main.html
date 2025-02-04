@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Breck Card Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+    th {
+      background-color: #f4f4f4;
+    }
+    input {
+      width: 80px;
+      text-align: center;
+    }
+    .winner {
+      font-size: 1.2em;
+      margin-top: 20px;
+      color: green;
+    }
+    .btn {
+      margin-top: 15px;
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Breck Card Game: Score Manager</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Player</th>
+        <th>Round 1 Call</th>
+        <th>Round 1 Points</th>
+        <th>Round 2 Call</th>
+        <th>Round 2 Points</th>
+        <th>Round 3 Call</th>
+        <th>Round 3 Points</th>
+        <th>Round 4 Call</th>
+        <th>Round 4 Points</th>
+        <th>Total Points</th>
+      </tr>
+    </thead>
+    <tbody id="scoreTable">
+      <!-- Rows will be dynamically added -->
+    </tbody>
+  </table>
+  <button class="btn" onclick="calculateScores()">Calculate Winner</button>
+  <p class="winner" id="winnerDisplay"></p>
+
+  <script>
+    const players = ['Player 1', 'Player 2', 'Player 3', 'Player 4'];
+
+    // Dynamically create rows for players
+    const scoreTable = document.getElementById('scoreTable');
+    players.forEach(player => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${player}</td>
+        ${[1, 2, 3, 4].map(() => `
+          <td><input type="number" class="call" min="0" /></td>
+          <td><input type="number" class="points" min="0" /></td>
+        `).join('')}
+        <td class="total">0</td>
+      `;
+      scoreTable.appendChild(row);
+    });
+
+    // Calculate total points and determine the winner
+    function calculateScores() {
+      const rows = scoreTable.querySelectorAll('tr');
+      let maxPoints = -1;
+      let winner = '';
+      
+      rows.forEach((row, index) => {
+        let totalPoints = 0;
+        const pointsInputs = row.querySelectorAll('.points');
+
+        pointsInputs.forEach(input => {
+          totalPoints += parseInt(input.value || '0', 10);
+        });
+
+        row.querySelector('.total').textContent = totalPoints;
+
+        if (totalPoints > maxPoints) {
+          maxPoints = totalPoints;
+          winner = players[index];
+        }
+      });
+
+      document.getElementById('winnerDisplay').textContent = `Winner: ${winner} with ${maxPoints} points!`;
+    }
+  </script>
+</body>
+</html>
